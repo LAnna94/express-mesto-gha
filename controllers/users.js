@@ -10,7 +10,7 @@ module.exports.getUsers = (req, res) => {
 
 // получение пользователя по Id
 module.exports.getUserById = (req, res) => {
-  User.findById(req.params._id)
+  User.findById(req.params.userId)
     .then((user) => {
       if (user) {
         res.send({ data: user });
@@ -46,7 +46,7 @@ module.exports.createUser = (req, res) => {
 module.exports.updateUserInfo = (req, res) => {
   const { name, about } = req.body;
 
-  User.findByIdAndUpdate(req.user._id, { name, about })
+  User.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
     .then((user) => {
       if (user) {
         res.send({ data: user });
@@ -67,7 +67,7 @@ module.exports.updateUserInfo = (req, res) => {
 module.exports.updateAvatar = (req, res) => {
   const { avatar } = req.body;
 
-  User.findByIdAndUpdate(req.user._id, { avatar })
+  User.findByIdAndUpdate(req.user._id, { avatar }, { new: true, runValidators: true })
     .then((user) => {
       if (user) {
         res.send({ data: user });
