@@ -19,7 +19,7 @@ module.exports.getUserById = (req, res) => {
       }
     })
     .catch((err) => {
-      if (err.name === 'CastError' || err.name === 'ValidationError') {
+      if (err.name === 'CastError') {
         res.status(constants.HTTP_STATUS_BAD_REQUEST).send({ message: 'Некорректные данные пользователя' });
       } else {
         res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).send({ message: 'На сервере произошла ошибка' });
@@ -34,7 +34,7 @@ module.exports.createUser = (req, res) => {
   User.create({ name, about, avatar })
     .then((user) => res.send({ data: user }))
     .catch((err) => {
-      if (err.name === 'castError' || err.name === 'ValidationError') {
+      if (err.name === 'ValidationError') {
         res.status(constants.HTTP_STATUS_BAD_REQUEST).send({ message: 'Некорректные данные пользователя' });
       } else {
         res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).send({ message: 'На сервере произошла ошибка' });
