@@ -1,5 +1,8 @@
 const { constants } = require('http2');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const User = require('../models/users');
+
 
 // получение всех пользователей
 module.exports.getUsers = (req, res) => {
@@ -29,9 +32,15 @@ module.exports.getUserById = (req, res) => {
 
 // создание нового пользователя
 module.exports.createUser = (req, res) => {
-  const { name, about, avatar } = req.body;
+  const {
+    name,
+    about,
+    avatar,
+    email,
+    password,
+  } = req.body;
 
-  User.create({ name, about, avatar })
+  User.create({ name, about, avatar, email, password })
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -82,4 +91,16 @@ module.exports.updateAvatar = (req, res) => {
         res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).send({ message: 'На сервере произошла ошибка' });
       }
     });
+};
+
+module.exports.login = (req, res) => {
+  const { email, password } = req.body;
+
+  return User.findUserByCredentials(email, password)
+    .then((user) => {
+      const token = jwt.sign({ _id: user._id }, '390b91924886afa7be8e8b2aa158de992b09c0d90ef540c2b81682e6544c43f6', { expiresIn: '7d' });
+
+      res.send({ token });
+    })
+    .catch(() => res.status(constants.HTTP_STATUS_NOT_FOUND).send({ message: 'Пользователь по указанному id не найден' }));
 };
