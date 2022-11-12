@@ -1,20 +1,27 @@
 const jwt = require('jsonwebtoken');
+const UnauthorizedError = require('../errors/BadRequestError');
+const BadRequestError = require('../errors/BadRequestError');
+
+const unauthorizedError = new UnauthorizedError('Необходима авторизация');
+const buildBadRequestError = new BadRequestError('Некорректные данные пользователя');
+
+const extractBearerToken = (header) => header.replace('Bearer ', '');
 
 module.exports = (req, res, next) => {
   const { authorization } = req.headers;
 
   if (!authorization || !authorization.startWith('Bearer ')) {
-    return res.status(401).send({ message: 'Необходима авторизация' });
+    next(unauthorizedError);
   }
 
-  const token = authorization.replace('Bearer ', '');
+  const token = extractBearerToken(authorization);
   let payload;
 
   try {
     payload = jwt.verify(token, '390b91924886afa7be8e8b2aa158de992b09c0d90ef540c2b81682e6544c43f6');
-    req.user = payload;
-    next();
   } catch (err) {
-    return res.status(401).send({ message: 'Необходима авторизация' });
+    next(buildBadRequestError);
   }
+  req.user = payload;
+  next();
 };

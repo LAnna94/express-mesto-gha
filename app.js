@@ -19,8 +19,11 @@ app.use(auth);
 app.use(bodyParser.json());
 app.use('/users', userRouter);
 app.use('/cards', cardsRouter);
-app.use((req, res) => {
-  res.status(constants.HTTP_STATUS_NOT_FOUND).send({ message: 'Страница не найдена' });
+app.use((err, req, res, next) => {
+  const status = err.statusCode || constants.HTTP_STATUS_INTERNAL_SERVER_ERROR;
+  const message = err.message || 'Неизвестная ошибка';
+  res.status(status).send({ message });
+  next();
 });
 
 app.listen(PORT);
