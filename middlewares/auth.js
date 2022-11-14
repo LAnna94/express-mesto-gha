@@ -10,7 +10,7 @@ const buildBadRequestError = new BadRequestError('Некорректные да�
 module.exports = (req, res, next) => {
   const { authorization } = req.headers;
 
-  if (!authorization || !authorization.startWith('Bearer ')) {
+  if (!authorization || !authorization.startsWith('Bearer ')) {
     next(unauthorizedError);
   }
 
