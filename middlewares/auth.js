@@ -5,8 +5,6 @@ const BadRequestError = require('../errors/BadRequestError');
 const unauthorizedError = new UnauthorizedError('Необходима авторизация');
 const buildBadRequestError = new BadRequestError('Некорректные данные пользователя');
 
-const extractBearerToken = (header) => header.replace('Bearer ', '');
-
 module.exports = (req, res, next) => {
   const { authorization } = req.headers;
 
@@ -14,7 +12,7 @@ module.exports = (req, res, next) => {
     next(unauthorizedError);
   }
 
-  const token = extractBearerToken(authorization);
+  const token = authorization.replace('Bearer ', '');
   let payload;
 
   try {

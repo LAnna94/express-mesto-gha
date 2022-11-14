@@ -24,6 +24,24 @@ module.exports.getUserById = (req, res, next) => {
   User.findById(req.params.userId)
     .then((user) => {
       if (user) {
+        res.send({ data: user });
+      } else {
+        throw notFoundError;
+      }
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        next(buildBadRequestError);
+      } else {
+        next(buildServerError);
+      }
+    });
+};
+
+module.exports.getCurrentUser = (req, res, next) => {
+  User.findById(req.user._id)
+    .then((user) => {
+      if (user) {
         res.send(user);
       } else {
         throw notFoundError;
@@ -43,12 +61,11 @@ module.exports.createUser = (req, res, next) => {
   bcrypt.hash(req.body.password, 10)
     .then((hash) => {
       req.body.password = hash;
-
       return User.create(req.body);
     })
     .then((document) => {
       const { password: removed, ...user } = document.toObject();
-      res.send({ data: user });
+      res.send(user);
     })
     .catch((err) => {
       if (err.code === 11000) {
