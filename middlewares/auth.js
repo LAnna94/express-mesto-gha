@@ -2,6 +2,8 @@ const jwt = require('jsonwebtoken');
 const UnauthorizedError = require('../errors/BadRequestError');
 const BadRequestError = require('../errors/BadRequestError');
 
+const { NODE_ENV, JWT_SECRET } = process.env;
+
 const unauthorizedError = new UnauthorizedError('Необходима авторизация');
 const buildBadRequestError = new BadRequestError('Некорректные данные пользователя');
 
@@ -12,11 +14,11 @@ module.exports = (req, res, next) => {
     next(unauthorizedError);
   }
 
-  const token = authorization.replace('Bearer ', '');
+  const token = authorization.replace(/^Bearer\s/i, '');
   let payload;
 
   try {
-    payload = jwt.verify(token, '390b91924886afa7be8e8b2aa158de992b09c0d90ef540c2b81682e6544c43f6');
+    payload = jwt.verify(token, NODE_ENV === 'production' ? JWT_SECRET : 'secret-key');
   } catch (err) {
     next(buildBadRequestError);
   }

@@ -5,6 +5,8 @@ const BadRequestError = require('../errors/BadRequestError');
 const NotFoundError = require('../errors/NotFoundError');
 const ServerError = require('../errors/ServerError');
 const ConflictError = require('../errors/ConflictError');
+
+const { NODE_ENV, JWT_SECRET } = process.env;
 // const HTTPError = require('../errors/HTTPError');
 
 const buildServerError = new ServerError('На сервере произошла ошибка');
@@ -125,7 +127,7 @@ module.exports.login = (req, res, next) => {
 
   return User.findUserByCredentials(email, password)
     .then((user) => {
-      const token = jwt.sign({ _id: user._id }, '390b91924886afa7be8e8b2aa158de992b09c0d90ef540c2b81682e6544c43f6', { expiresIn: '7d' });
+      const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'secret-key', { expiresIn: '7d' });
 
       res.send({ token });
     })
