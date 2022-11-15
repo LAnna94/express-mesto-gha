@@ -23,25 +23,9 @@ module.exports.getUsers = (req, res, next) => {
 
 // получение пользователя по Id
 module.exports.getUserById = (req, res, next) => {
-  User.findById(req.params.userId)
-    .then((user) => {
-      if (user) {
-        res.send({ data: user });
-      } else {
-        throw notFoundError;
-      }
-    })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        next(buildBadRequestError);
-      } else {
-        next(buildServerError);
-      }
-    });
-};
+  const userId = (req.params.userId === 'me') ? req.user._id : req.params.userId;
 
-module.exports.getCurrentUser = (req, res, next) => {
-  User.findById(req.user._id)
+  User.findById(userId)
     .then((user) => {
       if (user) {
         res.send({ data: user });

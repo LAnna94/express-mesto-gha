@@ -55,12 +55,16 @@ module.exports.deleteCard = (req, res, next) => {
 
 // лайк карточки
 module.exports.likeCard = (req, res, next) => {
-  Card.findByIdAndUpdate(req.params.cardId, { $addToSet: { likes: req.user._id } }, { new: true })
+  Card.findByIdAndUpdate(
+    req.params.cardId,
+    { $addToSet: { likes: req.user._id } },
+    { new: true, runValidators: true },
+  )
     .then((card) => {
-      if (card) {
-        res.send({ data: card });
-      } else {
+      if (!card) {
         throw notFoundError;
+      } else {
+        res.send({ data: card });
       }
     })
     .catch((err) => {
@@ -74,12 +78,16 @@ module.exports.likeCard = (req, res, next) => {
 
 // удаление лайка
 module.exports.dislikeCard = (req, res, next) => {
-  Card.findByIdAndUpdate(req.params.cardId, { $pull: { likes: req.user._id } }, { new: true })
+  Card.findByIdAndUpdate(
+    req.params.cardId,
+    { $pull: { likes: req.user._id } },
+    { new: true, runValidators: true },
+  )
     .then((card) => {
-      if (card) {
-        res.send({ data: card });
-      } else {
+      if (!card) {
         throw notFoundError;
+      } else {
+        res.send({ data: card });
       }
     })
     .catch((err) => {
