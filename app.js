@@ -19,10 +19,8 @@ app.use(bodyParser.json());
 app.post('/signin', celebrateLoginUser, login);
 app.post('/signup', celebrateBodyUser, createUser);
 
-app.use(auth);
-
-app.use('/users', userRouter);
-app.use('/cards', cardsRouter);
+app.use('/users', auth, userRouter);
+app.use('/cards', auth, cardsRouter);
 app.use('*', (req, res, next) => {
   next(new NotFoundError('Страница не найдена'));
 });

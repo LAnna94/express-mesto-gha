@@ -38,10 +38,10 @@ module.exports.deleteCard = (req, res, next) => {
     .then((card) => {
       if (!card) {
         throw notFoundError;
-      } else if (card.owner !== req.user._id) {
-        next(forbiddenError);
+      } else if (card.owner.toString() !== req.user._id) {
+        throw forbiddenError;
       } else {
-        res.send({ data: card });
+        res.send(card);
       }
     })
     .catch((err) => {
