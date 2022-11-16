@@ -36,7 +36,7 @@ module.exports.getUserById = (req, res, next) => {
       if (err.name === 'CastError') {
         next(buildBadRequestError);
       } else {
-        next(buildServerError);
+        next(err);
       }
     });
 };

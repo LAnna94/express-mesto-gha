@@ -51,7 +51,7 @@ module.exports.deleteCard = (req, res, next) => {
       if (err.name === 'CastError') {
         next(buildBadRequestError);
       } else {
-        next(buildServerError);
+        next(err);
       }
     });
 };
@@ -74,7 +74,7 @@ module.exports.likeCard = (req, res, next) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
         next(buildBadRequestError);
       } else {
-        next(buildServerError);
+        next(err);
       }
     });
 };
@@ -97,7 +97,7 @@ module.exports.dislikeCard = (req, res, next) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
         next(buildBadRequestError);
       } else {
-        next(buildServerError);
+        next(err);
       }
     });
 };
