@@ -34,15 +34,18 @@ module.exports.createCard = (req, res, next) => {
 
 // удаление карточки
 module.exports.deleteCard = (req, res, next) => {
-  Card.findByIdAndRemove(req.params.cardId)
+  Card.findById(req.params.cardId)
     .then((card) => {
       if (!card) {
         throw notFoundError;
       } else if (req.user._id !== card.owner.toString()) {
         throw forbiddenError;
       } else {
-        res.send(card);
+        return Card.findByIdAndRemove(req.params.cardId);
       }
+    })
+    .then((card) => {
+      res.send(card);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
