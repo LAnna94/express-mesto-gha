@@ -8,14 +8,14 @@ const {
 } = require('../controllers/users');
 const {
   celebrateAvatar,
-  celebrateProfile,
+  celebrateProfileInfo,
   celebrateUserId,
 } = require('../validators/users');
 
 userRouter.get('/', getUsers);
 userRouter.get('/me', getCurrentUser);
 userRouter.get('/:userId', celebrateUserId, getUserById);
-userRouter.patch('/me', celebrateProfile, updateUserInfo);
+userRouter.patch('/me', celebrateProfileInfo, updateUserInfo);
 userRouter.patch('/me/avatar', celebrateAvatar, updateAvatar);
 
 module.exports = userRouter;

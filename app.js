@@ -6,7 +6,7 @@ const { constants } = require('http2');
 const userRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
 const { login, createUser } = require('./controllers/users');
-const { celebrateBodyUser, celebrateLoginUser } = require('./validators/users');
+const { celebrateBodyUser, celebrateLogin } = require('./validators/users');
 const auth = require('./middlewares/auth');
 const NotFoundError = require('./errors/NotFoundError');
 
@@ -16,7 +16,7 @@ mongoose.connect('mongodb://localhost:27017/mestodb');
 
 app.use(bodyParser.json());
 
-app.post('/signin', celebrateLoginUser, login);
+app.post('/signin', celebrateLogin, login);
 app.post('/signup', celebrateBodyUser, createUser);
 
 app.use('/users', auth, userRouter);
