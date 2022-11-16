@@ -4,6 +4,7 @@ const {
   getUserById,
   updateUserInfo,
   updateAvatar,
+  getCurrentUser,
 } = require('../controllers/users');
 const {
   celebrateAvatar,
@@ -12,6 +13,7 @@ const {
 } = require('../validators/users');
 
 userRouter.get('/', getUsers);
+userRouter.get('/me', getCurrentUser);
 userRouter.get('/:userId', celebrateUserId, getUserById);
 userRouter.patch('/me', celebrateProfile, updateUserInfo);
 userRouter.patch('/me/avatar', celebrateAvatar, updateAvatar);

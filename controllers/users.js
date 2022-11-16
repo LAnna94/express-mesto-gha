@@ -23,12 +23,28 @@ module.exports.getUsers = (req, res, next) => {
 
 // получение пользователя по Id
 module.exports.getUserById = (req, res, next) => {
-  const userId = (req.params.userId === 'me') ? req.user._id : req.params.userId;
-
-  User.findById(userId)
+  User.findById(req.params.userId)
     .then((user) => {
       if (user) {
-        res.send({ data: user });
+        res.send(user);
+      } else {
+        throw notFoundError;
+      }
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        next(buildBadRequestError);
+      } else {
+        next(buildServerError);
+      }
+    });
+};
+
+module.exports.getCurrentUser = (req, res, next) => {
+  User.findById(req.user._id)
+    .then((user) => {
+      if (user) {
+        res.send(user);
       } else {
         throw notFoundError;
       }

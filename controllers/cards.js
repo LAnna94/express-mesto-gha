@@ -33,7 +33,7 @@ module.exports.createCard = (req, res, next) => {
 };
 
 // удаление карточки
-module.exports.deleteCard = (req, res, next) => {
+/* module.exports.deleteCard = (req, res, next) => {
   Card.findById(req.params.cardId)
     .then((card) => {
       if (!card) {
@@ -54,6 +54,29 @@ module.exports.deleteCard = (req, res, next) => {
         next(buildServerError);
       }
     });
+}; */
+
+module.exports.deleteCard = (req, res, next) => {
+  Card.findById(req.params.cardId)
+    .then((card) => {
+      if (!card) {
+        throw notFoundError;
+      } else if (req.user._id !== card.owner.toString()) {
+        throw forbiddenError;
+      } else {
+        return Card.findByIdAndRemove(req.params.cardId);
+      }
+    })
+    .then((card) => {
+      res.send(card);
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        next(buildBadRequestError);
+      } else {
+        next(err);
+      }
+    });
 };
 
 // лайк карточки
@@ -64,10 +87,10 @@ module.exports.likeCard = (req, res, next) => {
     { new: true, runValidators: true },
   )
     .then((card) => {
-      if (!card) {
-        throw notFoundError;
-      } else {
+      if (card) {
         res.send({ data: card });
+      } else {
+        throw notFoundError;
       }
     })
     .catch((err) => {
