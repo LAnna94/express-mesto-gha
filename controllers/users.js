@@ -5,6 +5,7 @@ const BadRequestError = require('../errors/BadRequestError');
 const NotFoundError = require('../errors/NotFoundError');
 const ServerError = require('../errors/ServerError');
 const ConflictError = require('../errors/ConflictError');
+const UnauthorizedError = require('../errors/UnauthorizedError');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 // const HTTPError = require('../errors/HTTPError');
@@ -13,6 +14,7 @@ const buildServerError = new ServerError('На сервере произошла
 const notFoundError = new NotFoundError('Пользователь не найден');
 const buildBadRequestError = new BadRequestError('Некорректные данные пользователя');
 const notUniqueUserError = new ConflictError('Пользователь с указанным email уже существует');
+const unauthorizedError = new UnauthorizedError('Неправильная почта или пароль');
 
 // получение всех пользователей
 module.exports.getUsers = (req, res, next) => {
@@ -22,7 +24,7 @@ module.exports.getUsers = (req, res, next) => {
 };
 
 // получение пользователя по Id
-module.exports.getUserById = (req, res, next) => {
+/* module.exports.getUserById = (req, res, next) => {
   User.findById(req.params.userId)
     .then((user) => {
       if (user) {
@@ -38,15 +40,33 @@ module.exports.getUserById = (req, res, next) => {
         next(buildServerError);
       }
     });
+}; */
+
+module.exports.getUserById = (req, res, next) => {
+  User.findById(req.params.userId)
+    .then((user) => {
+      if (!user) {
+        throw notFoundError;
+      } else {
+        res.send(user);
+      }
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        next(buildBadRequestError);
+      } else {
+        next(err);
+      }
+    });
 };
 
 module.exports.getCurrentUser = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
-      if (user) {
-        res.send(user);
-      } else {
+      if (!user) {
         throw notFoundError;
+      } else {
+        res.send(user);
       }
     })
     .catch((err) => {
@@ -132,13 +152,12 @@ module.exports.login = (req, res, next) => {
         NODE_ENV === 'production' ? JWT_SECRET : 'secret-key',
         { expiresIn: '7d' },
       );
-      res.send({ token });
+      res.cookie('jwt', token, {
+        maxAgt: 3600000 * 24,
+        httpOnly: true,
+      }).send({ token });
     })
-    .catch((err) => {
-      if (err.name === 'ValidationError' || err.name === 'CastError') {
-        next(buildBadRequestError);
-      } else {
-        next(buildServerError);
-      }
+    .catch(() => {
+      next(unauthorizedError);
     });
 };
