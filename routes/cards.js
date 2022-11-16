@@ -10,7 +10,7 @@ const { celebrateBodyCard, celebrateCardId } = require('../validators/cards');
 
 cardsRouter.get('/', getCards);
 cardsRouter.post('/', celebrateBodyCard, createCard);
-cardsRouter.delete('/:cardId', celebrateCardId, deleteCard);
+cardsRouter.delete('/:cardId', deleteCard);
 cardsRouter.put('/:cardId/likes', celebrateCardId, likeCard);
 cardsRouter.delete('/:cardId/likes', celebrateCardId, dislikeCard);
 
