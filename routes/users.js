@@ -13,7 +13,6 @@ const {
 
 userRouter.get('/', getUsers);
 userRouter.get('/:userId', celebrateUserId, getUserById);
-userRouter.get('/me', getUserById);
 userRouter.patch('/me', celebrateProfile, updateUserInfo);
 userRouter.patch('/me/avatar', celebrateAvatar, updateAvatar);
 
