@@ -32,6 +32,7 @@ module.exports.createCard = (req, res, next) => {
     });
 };
 
+// удаление карточки
 module.exports.deleteCard = (req, res, next) => {
   Card.findById(req.params.cardId)
     .then((card) => {
@@ -50,34 +51,12 @@ module.exports.deleteCard = (req, res, next) => {
       if (err.name === 'CastError') {
         next(buildBadRequestError);
       } else {
-        next(err);
+        next(buildServerError);
       }
     });
 };
 
 // лайк карточки
-/* module.exports.likeCard = (req, res, next) => {
-  Card.findByIdAndUpdate(
-    req.params.cardId,
-    { $addToSet: { likes: req.user._id } },
-    { new: true, runValidators: true },
-  )
-    .then((card) => {
-      if (card) {
-        res.send({ data: card });
-      } else {
-        throw notFoundError;
-      }
-    })
-    .catch((err) => {
-      if (err.name === 'CastError' || err.name === 'ValidationError') {
-        next(buildBadRequestError);
-      } else {
-        next(buildServerError);
-      }
-    });
-}; */
-
 module.exports.likeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
@@ -95,34 +74,12 @@ module.exports.likeCard = (req, res, next) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
         next(buildBadRequestError);
       } else {
-        next(err);
+        next(buildServerError);
       }
     });
 };
 
 // удаление лайка
-/* module.exports.dislikeCard = (req, res, next) => {
-  Card.findByIdAndUpdate(
-    req.params.cardId,
-    { $pull: { likes: req.user._id } },
-    { new: true, runValidators: true },
-  )
-    .then((card) => {
-      if (!card) {
-        throw notFoundError;
-      } else {
-        res.send({ data: card });
-      }
-    })
-    .catch((err) => {
-      if (err.name === 'CastError' || err.name === 'ValidationError') {
-        next(buildBadRequestError);
-      } else {
-        next(buildServerError);
-      }
-    });
-}; */
-
 module.exports.dislikeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
@@ -140,7 +97,7 @@ module.exports.dislikeCard = (req, res, next) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
         next(buildBadRequestError);
       } else {
-        next(err);
+        next(buildServerError);
       }
     });
 };

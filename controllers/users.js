@@ -8,7 +8,6 @@ const ConflictError = require('../errors/ConflictError');
 const UnauthorizedError = require('../errors/UnauthorizedError');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
-// const HTTPError = require('../errors/HTTPError');
 
 const buildServerError = new ServerError('На сервере произошла ошибка');
 const notFoundError = new NotFoundError('Пользователь не найден');
@@ -24,24 +23,6 @@ module.exports.getUsers = (req, res, next) => {
 };
 
 // получение пользователя по Id
-/* module.exports.getUserById = (req, res, next) => {
-  User.findById(req.params.userId)
-    .then((user) => {
-      if (user) {
-        res.send(user);
-      } else {
-        throw notFoundError;
-      }
-    })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        next(buildBadRequestError);
-      } else {
-        next(buildServerError);
-      }
-    });
-}; */
-
 module.exports.getUserById = (req, res, next) => {
   User.findById(req.params.userId)
     .then((user) => {
@@ -55,11 +36,12 @@ module.exports.getUserById = (req, res, next) => {
       if (err.name === 'CastError') {
         next(buildBadRequestError);
       } else {
-        next(err);
+        next(buildServerError);
       }
     });
 };
 
+// получение текущего пользователя
 module.exports.getCurrentUser = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
