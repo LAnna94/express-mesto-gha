@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 const validator = require('validator');
 const UnauthorizedError = require('../errors/BadRequestError');
 
-const regex = /^https?:\/\/(www.)?[\w\-/.]+[-._~:/?#[\]@!$'()*+,;=]*#?/;
+const regex = /^https?:\/\/(www\.)?[a-zA-Z\0-9]+\.[\w\-._~:/?#[\]@!$&'()*+,;=]{2,}#?$/;
 
 const unauthorizedError = new UnauthorizedError('Неправильная почта или пароль');
 

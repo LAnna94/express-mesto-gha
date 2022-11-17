@@ -55,7 +55,7 @@ module.exports.getCurrentUser = (req, res, next) => {
       if (err.name === 'CastError') {
         next(buildBadRequestError);
       } else {
-        next(buildServerError);
+        next(err);
       }
     });
 };
@@ -98,7 +98,7 @@ module.exports.updateUserInfo = (req, res, next) => {
       if (err.name === 'castError' || err.name === 'ValidationError') {
         next(buildBadRequestError);
       } else {
-        next(buildServerError);
+        next(err);
       }
     });
 };
@@ -119,7 +119,7 @@ module.exports.updateAvatar = (req, res, next) => {
       if (err.name === 'castError' || err.name === 'ValidationError') {
         next(buildBadRequestError);
       } else {
-        next(buildServerError);
+        next(err);
       }
     });
 };
