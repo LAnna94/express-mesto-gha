@@ -1,10 +1,11 @@
 const { celebrate, Joi } = require('celebrate');
+const regexUrl = require('./common');
 
 module.exports.celebrateBodyUser = celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
-    avatar: Joi.string().regex(/^https?:\/\/(www\.)?[a-zA-Z\0-9]+\.[\w\-._~:/?#[\]@!$&'()*+,;=]{2,}#?$/).uri({ scheme: ['http', 'https'] }),
+    avatar: Joi.string().regex(regexUrl).uri({ scheme: ['http', 'https'] }),
     email: Joi.string().email().required(),
     password: Joi.string().required(),
   }),
@@ -19,7 +20,7 @@ module.exports.celebrateLogin = celebrate({
 
 module.exports.celebrateAvatar = celebrate({
   body: Joi.object().keys({
-    avatar: Joi.string().regex(/^https?:\/\/(www\.)?[a-zA-Z\0-9]+\.[\w\-._~:/?#[\]@!$&'()*+,;=]{2,}#?$/).uri({ scheme: ['http', 'https'] }),
+    avatar: Joi.string().regex(regexUrl).uri({ scheme: ['http', 'https'] }),
   }),
 });
 
